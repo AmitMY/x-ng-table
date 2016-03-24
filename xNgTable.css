@@ -1,0 +1,65 @@
+ul.dropdown-menu li a {
+    cursor: pointer;
+}
+
+input.input-filter {
+    font-weight: normal;
+}
+
+table.myNgTable tr.selected {
+    background-color: rgb(202, 230, 255);
+}
+table.myNgTable tr.disabled {
+    background-color: #EEBBB9;
+}
+
+table.myNgTable th {
+    color: #2E57A2;
+    font-weight: 600;
+}
+table.myNgTable {
+    background-color: white;
+    margin-bottom: 0;
+}
+table.myNgTable td.big-row {
+    height: 200px;
+    vertical-align: middle;
+    position: relative;
+    font-size: 35px;
+}
+
+table.myNgTable td span {
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+    font-weight:600 !important;
+    font-size:13px;
+}
+
+table.myNgTable td.focus {
+    border: 2px #ADCDD4 solid;
+}
+
+/* This is for horizontal scrolling */
+#myNgTable_container {
+    display: block;
+    width: 100%;
+}
+
+/* This is for vertical scrolling */
+/*table.myNgTable thead, table.myNgTable tfoot{
+    display: table;
+}
+table.myNgTable thead {
+    position: absolute;
+    background-color: white;
+}
+table.myNgTable tbody {
+    display: block;
+    overflow: auto;
+    height: 450px;
+}
+table.myNgTable tbody td {
+    width: 100%;
+}*/

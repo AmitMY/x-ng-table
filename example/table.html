@@ -1,0 +1,246 @@
+<!-- If we want to message anything -->
+<div class="message"></div>
+<!-- If we want to copy the column -->
+<input id="text_to_copy" type="text" style="display: block; height: 1px; width: 1px;"/>
+
+<!-- Filters -->
+<script type="text/ng-template" id="ng-table/filters/number.html">
+    <input type="text" name="{{name}}" placeholder="Number"
+           onkeydown='restrictNumeric(event)'
+           class="input-filter form-control"
+           ng-disabled="$filterRow.disabled"
+           ng-model="params.filter()[name]"/>
+</script>
+
+<script type="text/ng-template" id="ng-table/filters/dates_range.html">
+    <input class="input-filter form-control" type="daterange" ranges="xNgTable.variables.ranges"
+           ng-model="params.filter()[name]"/>
+</script>
+
+<script type="text/ng-template" id="ng-table/filters/bool.html">
+    <input bs-switch type="checkbox"
+           ng-disabled="$filterRow.disabled"
+           ng-model="params.filter()[name]"
+           switch-on-text="{{$column.data.true_label? $column.data.true_label: $column.data.true}}"
+           switch-off-text="{{$column.data.false_label? $column.data.false_label: $column.data.false}}"
+           ng-true-value="'{{$column.data.true}}'"
+           ng-false-value="'{{$column.data.false}}'">
+</script>
+
+<script type="text/ng-template" id="ng-table/filters/multiselect_dataList.html">
+    <select multiple ng-multiple="true"
+            ng-options="row['{{$column.multiselect.id}}'] as row['{{$column.multiselect.title}}'] for row in dataList['{{$column.multiselect.list}}']"
+            ng-disabled="$filterRow.disabled"
+            ng-model="params.filter()[name]"
+            class="filter filter-select-multiple form-control" name="{{name}}">
+    </select>
+</script>
+
+<script type="text/ng-template" id="ng-table/filters/multiselect_isteven_dataList.html">
+    <isteven-multi-select
+            input-model="dataList[$column.multiselect.list]"
+            output-model="params.filter()[name]"
+            button-label="{{$column.multiselect.title}}"
+            item-label="{{$column.multiselect.title}}"
+            output-properties="{{$column.multiselect.id}}"
+            tick-property="ticked">
+    </isteven-multi-select>
+</script>
+<script type="text/ng-template" id="ng-table/filters/select_dataList.html">
+    <select
+            ng-options="row['{{$column.select.id}}'] as row['{{$column.select.title}}'] for row in dataList['{{$column.select.list}}']"
+            ng-disabled="$filterRow.disabled"
+            ng-model="params.filter()[name]"
+            class="filter filter-select-multiple form-control" name="{{name}}">
+    </select>
+</script>
+
+<!-- Global Filter -->
+<div class="row" ng-if="xNgTable.tableSettings.global_filter">
+    <div class="col-xs-12">
+        <form name="xNgTable.variables.searchForm" novalidate ng-submit="xNgTable.table.reload()">
+            <div class="input-group">
+                <span class="input-group-addon">Global Search:</span>
+
+                <input type="text" class="form-control" placeholder="Search term" name="searchTerm"
+                       ng-model="xNgTable.variables.globalSearchTerm"/>
+
+                <span class="input-group-btn">
+                    <button class="btn btn-secondary btn-primary" type="submit">
+                        <span class="glyphicon glyphicon-search"></span>
+                    </button>
+                    <button class="btn btn-secondary btn-danger"
+                            ng-disabled="xNgTable.variables.globalSearchTerm == ''"
+                            ng-click="xNgTable.variables.globalSearchTerm = '';xNgTable.table.reload()">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </button>
+                </span>
+            </div>
+        </form>
+    </div>
+</div>
+<hr ng-if="xNgTable.tableSettings.global_filter"/>
+
+<table class="table" ng-if="xNgTable.tableSettings.filter == 'outside'">
+    <tr>
+        <td ng-repeat="$column in xNgTable.tableSettings.data" ng-if="$column.filter !== undefined">
+            {{$column.title}}:
+            <div ng-repeat="(name, filter) in $column.filter">
+                <div ng-include="'ng-table/filters/' + filter + '.html'"></div>
+            </div>
+        </td>
+    </tr>
+</table>
+<hr ng-if="xNgTable.tableSettings.filter == 'outside'"/>
+
+<!-- Actions on selected Items dropdown + select all/none -->
+<div class="row" ng-if="xNgTable.tableSettings.actions !== false || xNgTable.tableSettings.selectable != false">
+    <div class="col-sm-12">
+        <!-- select buttons -->
+        <div class="pull-left" ng-if="xNgTable.tableSettings.selectable != false">
+            <button class="btn btn-primary"
+                    ng-click="xNgTable.events.selectAll()">
+                Select All
+            </button>
+            <button class="btn btn-danger"
+                    ng-click="xNgTable.events.deselectAll()"
+                    ng-disabled="xNgTable.variables.selected_length == 0">
+                Deselect All
+            </button>
+        </div>
+        <!-- actions dropdown -->
+        <div class="dropdown pull-right"
+             ng-show="xNgTable.tableSettings.dropdown_actions == true && xNgTable.tableSettings.actions !== false">
+            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"
+                    ng-disabled="xNgTable.variables.selected_length == 0">
+                {{xNgTable.variables.selected_length = xNgTable.events.get_selected_rows().length}} Selected
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li ng-repeat="action in xNgTable.tableSettings.actions"
+                    ng-if="!action.permission || checkPermission(action.permission)">
+                    <a ng-click="xNgTable.actions[action.action]()">{{action.title}}</a>
+                </li>
+                <li ng-repeat="action in xNgTable.tableSettings.actions_list"
+                    ng-if="!action.permission || checkPermission(action.permission)">
+                    <a ng-click="action.action()">{{action.title}}</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="pull-right"
+             ng-show="xNgTable.tableSettings.dropdown_actions == false && xNgTable.tableSettings.actions !== false">
+            <span ng-repeat="action in xNgTable.tableSettings.actions"
+                  ng-if="!action.permission || checkPermission(action.permission)">
+                <button class="btn btn-{{action.type?action.type:'primary'}}"
+                        ng-click="xNgTable.actions[action.action]()"
+                        ng-disabled="xNgTable.variables.selected_length == 0">
+                    {{action.title}}
+                </button>
+            </span>
+            <span ng-repeat="action in xNgTable.tableSettings.actions_list"
+                  ng-if="!action.permission || checkPermission(action.permission)">
+                <button class="btn btn-{{action.type?action.type:'primary'}}" ng-click="action.action()"
+                        ng-disabled="xNgTable.variables.selected_length == 0">
+                    {{action.title}}
+                </button>
+            </span>
+        </div>
+    </div>
+</div>
+
+<hr ng-if="xNgTable.tableSettings.actions !== false"/>
+<div id="myNgTable_container">
+    <table
+            ng-table-dynamic="xNgTable.table with xNgTable.tableSettings.data"
+            class="table myNgTable"
+            ng-class="xNgTable.tableSettings.class" show-filter="{{xNgTable.tableSettings.filter == 'inside'}}">
+        <tbody>
+
+        <tr ng-repeat="row in $data" ng-if="xNgTable.status == true"
+            ng-class="{
+                selected: xNgTable.tableSettings.selectable != false && row[xNgTable.tableSettings.selectable],
+                disabled: !xNgTable.tableSettings.selection_rule(row)
+            }">
+            <!-- Normal Columns -->
+            <td ng-repeat="col in $columns"
+                ng-style="col.style?col.style:{}"
+                ng-class="col.ngclass?col.ngclass:''"
+                ng-click="((!col.disable_event || col.disable_event == false) && xNgTable.tableSettings.selection_rule(row))?
+                            xNgTable.events.row_click($event, row, $parent.$index, col.field):
+                            xNgTable.events.void()"
+                ng-dblclick="xNgTable.events.row_2click($event,row,$index)">
+
+                <!-- Select button -->
+					<span ng-if="col.field == xNgTable.tableSettings.selectable">
+						<input type="checkbox" ng-model="row[col.field]" ng-disabled="!xNgTable.tableSettings.selection_rule(row)"/>
+					</span>
+
+                <!-- Normal column -->
+					<span ng-if="col.field != xNgTable.tableSettings.selectable && col.field != xNgTable.tableSettings.delete">
+						<!-- HTML columns -->
+						<span ng-if="col.type && col.type=='html'"
+                              ng-bind-html="xNgTable.events.trust_as_html(col.function(row))"></span>
+                        <!-- Normal columns -->
+						<span ng-if="!col.type || col.type!='html'">
+							{{::col.function?col.function(row):row[col.field]}}
+						</span>
+					</span>
+
+                <!-- Actions column -->
+					<span ng-if="col.field === xNgTable.tableSettings.delete">
+						<button class="btn btn-danger delete"><i class="glyphicon glyphicon-trash"></i></button>
+						<button class="btn btn-warning delCon hide back"><i class="fa fa-arrow-left"></i></button>
+						<button class="btn btn-danger delCon hide" ng-click="deleteRow(row.id)"><i
+                                class="glyphicon glyphicon-trash"></i></button>
+					</span>
+            </td>
+        </tr>
+        <!-- This is the loading screen -->
+        <tr ng-if="xNgTable.status == 'loading'">
+            <td colspan="{{xNgTable.tableSettings.data.length}}" class="text-center">
+                <h2>Loading...</h2>
+            </td>
+        </tr>
+        <!-- This is the loading screen -->
+        <tr ng-if="xNgTable.status == true && $data.length == 0">
+            <td colspan="{{xNgTable.tableSettings.data.length}}" class="text-center big-row">
+                <h2>No Data</h2>
+            </td>
+        </tr>
+        <!-- This is the error screen -->
+        <tr ng-if="xNgTable.status == false">
+            <td colspan="{{xNgTable.tableSettings.data.length}}" class="text-center big-row">
+                <h2>Error!</h2>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="{{xNgTable.tableSettings.data.length}}">
+                Total results: {{xNgTable.variables.total_results}}, Results shown: {{$data.length}}
+            </td>
+        </tr>
+        </tbody>
+
+        <!-- Add row, TODO -->
+        <tfoot>
+        <tr ng-if="xNgTable.tableSettings.addRow">
+            <td ng-repeat="col in xNgTable.tableSettings.data" ng-if="col.field != xNgTable.tableSettings.delete">
+					<span ng-if="col.field != '' && col.field != xNgTable.tableSettings.selectable">
+						<input type="text" class="form-control" ng-model="newRow[col.field]"
+                               placeholder="{{col.title}}"/>
+					</span>
+            </td>
+            <td class="text-right">
+                <button class="btn btn-primary" ng-show="button==true" ng-click="addRow()">Add
+                    {{xNgTable.tableSettings.rowTitle}}
+                </button>
+                <button class="btn btn-danger" ng-show="button=='error'" ng-click="button=true">Error</button>
+                <button class="btn btn-success" ng-show="button=='success'" ng-click="button=true">Success</button>
+            </td>
+        </tr>
+        </tfoot>
+    </table>
+</div>
+
+<span class="hide" id="clickToProfileAlert" data-toggle="modal" data-target="#profileAlert"></span>

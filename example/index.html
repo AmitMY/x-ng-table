@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Extended Ng-Table | AmitMY</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.2/angular.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ng-table/0.8.3/ng-table.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="../xNgTable.js"></script>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css"
+          href="../xNgTable.css"/>
+</head>
+<body ng-app="extendedNgTable" ng-controller="main">
+<div ng-include="'table.html'"></div>
+<script>
+    var app = angular.module("extendedNgTable", ["xNgTable"]);
+    app.controller("main", function ($scope, xNgTable) {
+        $scope.dataList = {
+            users: [
+                {user_id: 1, user_name: "John"},
+                {user_id: 2, user_name: "Doe"}
+            ]
+        };
+
+        $scope.xNgTable = new xNgTable({
+            scope: $scope,
+            global_filter: true,
+
+            actions: [{title: 'Export to CSV', action: 'export_selected_csv'}],
+            data: [
+                {title: 'ID', field: 'id', filter: {id: 'number'}, function(row) {
+                    return '#'+row.id;
+                }},
+                {title: 'User', field: 'userId', filter: {userId: 'select_dataList'}, select: {list: 'users', id: 'user_id', title: 'user_name'}},
+                {title: 'Title', field: 'title', filter: {title: 'text'}},
+                {title: 'Body', field: 'body', filter: {body: 'text'}, function(row) {
+                    var sub = row.body.substring(0, 75);
+                    if(row.body.length > 75) sub += "...";
+                    return sub;
+                }}
+            ],
+            url: "http://jsonplaceholder.typicode.com/posts",
+            filter_data_backend: false
+        });
+    });
+</script>
+</body>
+</html>
