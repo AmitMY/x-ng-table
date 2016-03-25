@@ -86,7 +86,7 @@
     </div>
 </div>
 <hr ng-if="xNgTable.tableSettings.global_filter"/>
-<pre>{{xNgTable | json }}</pre>
+<!--<pre>{{xNgTable | json }}</pre>-->
 <table class="table" ng-if="xNgTable.tableSettings.filter == 'outside'" ng-init="params = xNgTable.table">
     <tr class="ng-table-filters">
         <td ng-repeat="$column in xNgTable.tableSettings.data" ng-if="$column.filter !== undefined">

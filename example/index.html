@@ -26,18 +26,35 @@
                 {user_id: 2, user_name: "Doe"}
             ]
         };
-
+        var delete_selected = function() {
+            var id_array = []; //array of the id of the selected tows
+            $.each($scope.xNgTable.events.get_selected_rows(), function (key, val) {
+                id_array.push($scope.xNgTable.data[val].id);
+            });
+            // Here comes the AJAX request if you so desire. //
+            $.each(id_array, function(key, val) {
+                $scope.xNgTable.events.remove_row('id', val);
+            });
+        };
         $scope.xNgTable = new xNgTable({
             scope: $scope,
             global_filter: true,
-            filter: 'outside',
+            dropdown_actions: false,
+            selection_rule: function (row) {
+                return row.id != 1;
+            },
+            row_2click: function(row) {
+                alert("Double clicked on row #" + row.id)
+            },
             actions: [{title: 'Export to CSV', action: 'export_selected_csv'}],
+            actions_list: [{title: "Delete Selected", action: delete_selected, type:"danger"}],
             data: [
-                {title: 'ID', field: 'id', filter: {id: 'number'}, function(row) {
+                {title: 'ID', field: 'id', filter: {id: 'number'}, style: {'text-align':'center'}, sortable: 'id', function(row) {
                     return '#'+row.id;
                 }},
-                {title: 'User', field: 'userId', filter: {userId: 'select_dataList'}, select: {list: 'users', id: 'user_id', title: 'user_name'}},
-                {title: 'Title', field: 'title', filter: {title: 'text'}},
+                {title: 'User', field: 'userId', style: {'text-align':'center'}, sortable: 'userId',
+                    filter: {userId: 'select_dataList'}, select: {list: 'users', id: 'user_id', title: 'user_name'}},
+                {title: 'Title', field: 'title', filter: {title: 'text'}, sortable: 'title'},
                 {title: 'Body', field: 'body', filter: {body: 'text'}, function(row) {
                     var sub = row.body.substring(0, 75);
                     if(row.body.length > 75) sub += "...";
@@ -47,6 +64,8 @@
             url: "http://jsonplaceholder.typicode.com/posts",
             filter_data_backend: false
         });
+
+
     });
 </script>
 </body>

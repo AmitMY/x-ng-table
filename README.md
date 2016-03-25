@@ -108,3 +108,4 @@ Please help make it better!
 - Trinary filter (the binary one does not have a nutral option)
 - Fixed header (as it is a \<table\> it is hard)
 - Pinned columns (as it is a \<table\> it is hard)
+- Better responsivity (the \<table\> clips out)
