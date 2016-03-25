@@ -50,7 +50,7 @@ Please help make it better!
 * `I define dataList as a scoped object containing lists of data.`
 
 ## Public methods on selected rows
-- Export as CSV
+- Export as CSV (Will export any selection as csv, but will encode several characters like '#')
 - Custom public table methods
 
 ## Private methods

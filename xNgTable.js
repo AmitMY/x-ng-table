@@ -135,7 +135,7 @@ xNgTable.factory('xNgTable', ['$http', 'ngTableParams', '$filter', '$timeout', '
                     factory.extended.status = true;
 
                     callback(filteredData);
-                    return factory.extended.variables.$data = filteredData;
+                    return filteredData;
                 },
                 /**
                  * @ngdoc method
@@ -159,18 +159,18 @@ xNgTable.factory('xNgTable', ['$http', 'ngTableParams', '$filter', '$timeout', '
                             order: order
                         }).success(function (response) {
                             if (response.status == true && response.data.length > 0) {
-                                factory.extended.variables.$data = factory.extended.data = response.data;
+                                factory.extended.data = response.data;
                                 factory.extended.variables.total_results = response.total_count;
                                 factory.extended.status = true;
                                 callback(factory.extended.data);
                             } else {
-                                factory.extended.variables.$data = factory.extended.data = [];
+                                factory.extended.data = [];
                                 factory.extended.variables.total_results = 0;
                                 factory.extended.status = true;
                                 callback([]);
                             }
                         }).error(function (data, status) {
-                            factory.extended.variables.$data = factory.extended.data = [];
+                            factory.extended.data = [];
                             factory.extended.variables.total_results = 0;
                             factory.extended.status = false;
                             callback([]);
@@ -226,7 +226,7 @@ xNgTable.factory('xNgTable', ['$http', 'ngTableParams', '$filter', '$timeout', '
                  */
                 selectAll: function () {
                     var selectable = factory.extended.tableSettings.selectable;
-                    $.each(factory.extended.variables.$data, function (key, val) {
+                    $.each(factory.extended.data, function (key, val) {
                         if(factory.extended.tableSettings.selection_rule(val))
                             val[selectable] = true;
                     });
@@ -241,7 +241,7 @@ xNgTable.factory('xNgTable', ['$http', 'ngTableParams', '$filter', '$timeout', '
                  */
                 deselectAll: function () {
                     var selectable = factory.extended.tableSettings.selectable;
-                    $.each(factory.extended.variables.$data, function (key, val) {
+                    $.each(factory.extended.data, function (key, val) {
                         val[selectable] = false;
                     });
                 },
@@ -337,7 +337,7 @@ xNgTable.factory('xNgTable', ['$http', 'ngTableParams', '$filter', '$timeout', '
                                     var d = row[val.field];
                                 else
                                     var d = val.function(row);
-                                csvContent += new String(d).replace(',', '\,').replace('\n', ' ') + ",";
+                                csvContent += encodeURIComponent(new String(d).replace(',', '\,')).replace(/%20/g,' ') + ",";
                             }
                         });
                         csvContent += "\n";
@@ -355,7 +355,6 @@ xNgTable.factory('xNgTable', ['$http', 'ngTableParams', '$filter', '$timeout', '
             variables: { //if there need to be extra variables, they would come here
                 globalSearchTerm: '',   // Default search term
                 total_results: 0,       // Saves the total results amount
-                $data: [],              // Saves the rows in $data
                 ranges: {
                     'Today': [moment(), moment()],
                     'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
@@ -385,7 +384,7 @@ xNgTable.factory('xNgTable', ['$http', 'ngTableParams', '$filter', '$timeout', '
                     factory.extended.variables.total_results = 0;
                 }
             }).error(function (data, status) {
-                factory.extended.variables.$data = factory.extended.data = [];
+                factory.extended.data = [];
                 factory.extended.variables.total_results = 0;
                 factory.extended.status = false;
                 $defer.resolve([]);
@@ -419,6 +418,8 @@ xNgTable.factory('xNgTable', ['$http', 'ngTableParams', '$filter', '$timeout', '
                     getData: function ($defer, params) {
                         //Start loading:
                         factory.extended.status = 'loading';
+
+                        console.log(params);
 
                         //If there is a global parameter, add it to the filter list
                         if (factory.extended.tableSettings.global_filter && factory.extended.variables.globalSearchTerm != "")
