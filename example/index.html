@@ -14,7 +14,8 @@
     <link rel="stylesheet" type="text/css"
           href="../xNgTable.css"/>
 </head>
-<body ng-app="extendedNgTable" ng-controller="main">
+<body ng-app="extendedNgTable" ng-controller="main"
+    style="padding: 50px;">
 <div ng-include="'table.html'"></div>
 <script>
     var app = angular.module("extendedNgTable", ["xNgTable"]);
@@ -29,7 +30,7 @@
         $scope.xNgTable = new xNgTable({
             scope: $scope,
             global_filter: true,
-
+            filter: 'outside',
             actions: [{title: 'Export to CSV', action: 'export_selected_csv'}],
             data: [
                 {title: 'ID', field: 'id', filter: {id: 'number'}, function(row) {

@@ -1,7 +1,13 @@
 <!-- If we want to message anything -->
 <div class="message"></div>
 <!-- If we want to copy the column -->
-<input id="text_to_copy" type="text" style="display: block; height: 1px; width: 1px;"/>
+<input id="text_to_copy" type="text"
+       style="background: transparent;
+        border: none;
+        display: block;
+        height: 1px;
+        opacity: 0.1;
+        width: 1px;"/>
 
 <!-- Filters -->
 <script type="text/ng-template" id="ng-table/filters/number.html">
@@ -81,8 +87,8 @@
 </div>
 <hr ng-if="xNgTable.tableSettings.global_filter"/>
 
-<table class="table" ng-if="xNgTable.tableSettings.filter == 'outside'">
-    <tr>
+<table class="table" ng-if="xNgTable.tableSettings.filter == 'outside'" ng-init="params = xNgTable.table">
+    <tr class="ng-table-filters">
         <td ng-repeat="$column in xNgTable.tableSettings.data" ng-if="$column.filter !== undefined">
             {{$column.title}}:
             <div ng-repeat="(name, filter) in $column.filter">

@@ -372,9 +372,14 @@ xNgTable.factory('xNgTable', ['$http', 'ngTableParams', '$filter', '$timeout', '
             factory.extended.status = 'loading';
             $http.get(url).success(function (response) {
                 factory.extended.status = true;
+                if(Array.isArray(response)) //handling data out of format.
+                    response = {
+                        status: response.length != 0,
+                        data: response
+                    };
+
                 if (response.status == true) {
                     createTable(response.data);
-                    createTable(response);
                 } else {
                     createTable([]);
                     factory.extended.variables.total_results = 0;
