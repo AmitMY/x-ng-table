@@ -5,9 +5,9 @@ AngularJS service built around esvit/ng-table, with extra features
 Please help make it better!
 ### I am committed to answer any issue, and try my best creating new features
 
-## Example - /example Screen-shot
+## Example - /example Screenshot
 [logo]: https://github.com/AmitMY/x-ng-table/raw/master/example/example.png "Example screenshot"
-
+![Alt text](https://github.com/AmitMY/x-ng-table/raw/master/example/example.png "Optional Title")
 ## Usage
 ```js
     angular.module('yourApp',['xNgTable'])
