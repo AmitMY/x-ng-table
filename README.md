@@ -3,6 +3,10 @@ AngularJS service built around esvit/ng-table, with extra features
 
 ### AWFUL CODING - GREAT FUNCTIONALITY.
 Please help make it better!
+### I am committed to answer any issue, and try my best creating new features
+
+## Example - /example Screen-shot
+[logo]: https://github.com/AmitMY/x-ng-table/raw/master/example/example.png "Example screenshot"
 
 ## Usage
 ```js

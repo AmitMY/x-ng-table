@@ -59,7 +59,7 @@ xNgTable.factory('xNgTable', ['$http', 'ngTableParams', '$filter', '$timeout', '
                 title: '',
                 field: tableSettings.delete,
                 disable_event: true,
-                style: {'text-align': 'right'},
+                style: {'text-align': 'center'},
                 dataType: "command"
             });
 

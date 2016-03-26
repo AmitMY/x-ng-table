@@ -36,12 +36,14 @@
                 $scope.xNgTable.events.remove_row('id', val);
             });
         };
+
+
         $scope.xNgTable = new xNgTable({
             scope: $scope,
             global_filter: true,
             dropdown_actions: false,
             selection_rule: function (row) {
-                return row.id != 1;
+                return row.id != 2;
             },
             row_2click: function(row) {
                 alert("Double clicked on row #" + row.id)

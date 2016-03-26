@@ -195,9 +195,7 @@
 
                 <!-- Actions column -->
 					<span ng-if="col.field === xNgTable.tableSettings.delete">
-						<button class="btn btn-danger delete"><i class="glyphicon glyphicon-trash"></i></button>
-						<button class="btn btn-warning delCon hide back"><i class="fa fa-arrow-left"></i></button>
-						<button class="btn btn-danger delCon hide" ng-click="deleteRow(row.id)"><i
+						<button class="btn btn-danger" ng-click="deleteRow($index)"><i
                                 class="glyphicon glyphicon-trash"></i></button>
 					</span>
             </td>
