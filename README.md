@@ -1,9 +1,9 @@
 # x-ng-table
 AngularJS service built around esvit/ng-table, with extra features
 
-### AWFUL CODING - GREAT FUNCTIONALITY.
-Please help make it better!
-### I am committed to answer any issue, and try my best creating new features
+### The currently best grid system for Angular, and imo for JS in general is [AG-grid](https://github.com/ceolter/ag-grid)
+
+---
 
 ## Example - /example Screenshot
 [logo]: https://github.com/AmitMY/x-ng-table/raw/master/example/example.png "Example screenshot"
